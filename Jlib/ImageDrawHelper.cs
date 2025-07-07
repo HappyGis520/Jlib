@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*******************************************************************
+ * * 功   能：  日志输出接口
+ * * 作   者：  Jack
+ * * 编程语言： C# 
+ * *******************************************************************/
+using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Jlib
 {
-    public static class ImageAnnotationHelper
+    /// <summary>
+    /// 在图片上绘制矩形
+    /// </summary>
+    public static class ImageDrawHelper
     {
         /// <summary>
         /// 
