@@ -1,0 +1,21 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/ButtonStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/CloseButton.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/ConnectStatusStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/HintTextBoxStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/PasswordStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/FunButtonStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/MessageInfoLabStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/IconTitleLabelStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/NotificationControlStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/CameraStatusStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/AGVLabelStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/OrderLabelStyle.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/NotificationLabel.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/ExpandableImageControl.xaml"/>
+        <ResourceDictionary Source="/Theme.Default;component/Skins/PasswordInputStyle.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
