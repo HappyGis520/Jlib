@@ -52,12 +52,16 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
+    <Reference Include="System.CodeDom, Version=9.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\scanner\packages\System.CodeDom.9.0.7\lib\net462\System.CodeDom.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -70,6 +74,7 @@
     <Compile Include="ActionCommand.cs" />
     <Compile Include="AudioPlayer.cs" />
     <Compile Include="EventToCommandBehavior.cs" />
+    <Compile Include="HardwareMonitor.cs" />
     <Compile Include="IJLog.cs" />
     <Compile Include="ImageDrawHelper.cs" />
     <Compile Include="JasonNameAttribute.cs" />
