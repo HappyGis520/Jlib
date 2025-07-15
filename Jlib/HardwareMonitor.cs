@@ -42,15 +42,15 @@ namespace Jlib
             insertWatcher.EventArrived += (sender, e) =>
             {
                 var device = (ManagementBaseObject)e.NewEvent["TargetInstance"];
-                var id = device.GetPropertyValue("Dependent")?.ToString();
-                if (IsPhysicalDevice(id, out string vidPid, out id))
+                var str = device.GetPropertyValue("Dependent")?.ToString();
+                if (IsPhysicalDevice(str, out string vid,out string pid, out string sid))
                 {
-                    Console.WriteLine($"插入物理设备: VID/PID: {vidPid}, ID: {id}");
-                    DeviceChangedEvent?.BeginInvoke(true, vidPid, id, id, null, null); // 异步调用事件
+                    Console.WriteLine($"插入物理设备:{str} VID/PID: {vid}/{pid}, ID: {sid}");
+                    DeviceChangedEvent?.BeginInvoke(true, vid,pid, sid, null, null); // 异步调用事件
                 }
                 else
                 {
-                    Console.WriteLine($"插入虚拟设备或非USB设备: ID: {id}");
+                    Console.WriteLine($"插入虚拟设备或非USB设备: ID: {sid}");
                 }
             };
 
@@ -62,15 +62,15 @@ namespace Jlib
                 // 此处可添加移除处理逻辑
 
                 var device = (ManagementBaseObject)e.NewEvent["TargetInstance"];
-                var id = device.GetPropertyValue("Dependent")?.ToString().Trim();
-                if(IsPhysicalDevice(id, out string vidPid, out id))
+                var str = device.GetPropertyValue("Dependent")?.ToString().Trim();
+                if (IsPhysicalDevice(str, out string vid, out string pid, out string sid))
                 {
-                    Console.WriteLine($"移除物理设备: VID/PID: {vidPid}, ID: {id}");
-                    DeviceChangedEvent?.BeginInvoke(false, vidPid, id, id,null,null); // 异步调用事件
+                    Console.WriteLine($"移除物理设备:{str} VID/PID: {vid}/{pid}, ID: {sid}");
+                    DeviceChangedEvent?.BeginInvoke(false, vid,pid, sid, null,null); // 异步调用事件
                 }
                 else
                 {
-                    Console.WriteLine($"移除虚拟设备或非USB设备: ID: {id}");
+                    Console.WriteLine($"移除虚拟设备或非USB设备: ID: {sid}");
                 }
 
 
@@ -89,46 +89,23 @@ namespace Jlib
             Console.WriteLine("已停止硬件监听");
         }
 
-        private  bool IsPhysicalDevice(string deviceIdString, out string vidPid, out string id)
+        private  bool IsPhysicalDevice(string deviceIdString, out string vid,out string pid, out string sid)
         {
-            vidPid = null;
-            id = null;
-            var regex = new Regex(@".+?DeviceID=""(.+?)""", RegexOptions.Compiled);
+            vid = "";
+            pid = "";
+            sid = "";
 
-            var match = regex.Match(deviceIdString);
+            // 正则表达式（详细说明见下方）
+            string pattern = @"DeviceID=""(?<type>USB|HID)\\.*?VID_(?<vid>[0-9A-F]{4})&PID_(?<pid>[0-9A-F]{4}).*?\\\\(?<sid>[^""]+)""";
+
+            Match match = Regex.Match(deviceIdString, pattern, RegexOptions.IgnoreCase);
             if (!match.Success)
                 return false;
-
-            string eventType = match.Groups[0].Value;
-            deviceIdString = match.Groups[1].Value.Replace(@"\\", @"\"); // 将双反斜杠转换为单反斜杠
-
-            // 检查是否符合物理设备特征
-            if (!deviceIdString.StartsWith("USB\\", StringComparison.Ordinal) ||
-                deviceIdString.Contains("&MI_"))
-            {
-                return false;
-            }
-
-            // 提取VID/PID部分和设备ID
-            var parts = deviceIdString.Split('\\');
-            if (parts.Length < 3) return false;
-
-            // 查找包含VID/PID的部分
-            foreach (var part in parts)
-            {
-                if (part.StartsWith("VID_", StringComparison.Ordinal) &&
-                    part.Contains("&PID_"))
-                {
-                    vidPid = part;
-                    break;
-                }
-            }
-
-            if (vidPid == null) return false;
-
-            // 最后一个非空部分作为设备ID
-            id = parts[parts.Length - 1];
-            return !string.IsNullOrEmpty(id);
+            string deviceType = match.Groups["type"].Value;
+                vid = match.Groups["vid"].Value;
+                pid = match.Groups["pid"].Value;
+                sid = match.Groups["sid"].Value;
+            return true;
         }
     }
 }
