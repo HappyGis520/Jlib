@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace Jlib
@@ -45,12 +46,12 @@ namespace Jlib
                 var str = device.GetPropertyValue("Dependent")?.ToString();
                 if (IsPhysicalDevice(str, out string vid,out string pid, out string sid))
                 {
-                    Console.WriteLine($"插入物理设备:{str} VID/PID: {vid}/{pid}, ID: {sid}");
+                    Console.WriteLine($"插入物理设备:{str} 提取ID{vid}-{pid}-{sid}");
                     DeviceChangedEvent?.BeginInvoke(true, vid,pid, sid, null, null); // 异步调用事件
                 }
                 else
                 {
-                    Console.WriteLine($"插入虚拟设备或非USB设备: ID: {sid}");
+                    Console.WriteLine($"插入虚拟设备或非USB设备: ID: {vid}-{pid}-{sid}");
                 }
             };
 
@@ -65,12 +66,12 @@ namespace Jlib
                 var str = device.GetPropertyValue("Dependent")?.ToString().Trim();
                 if (IsPhysicalDevice(str, out string vid, out string pid, out string sid))
                 {
-                    Console.WriteLine($"移除物理设备:{str} VID/PID: {vid}/{pid}, ID: {sid}");
+                    Console.WriteLine($"移除物理设备:{str},提取ID{vid}-{pid}-{sid}");
                     DeviceChangedEvent?.BeginInvoke(false, vid,pid, sid, null,null); // 异步调用事件
                 }
                 else
                 {
-                    Console.WriteLine($"移除虚拟设备或非USB设备: ID: {sid}");
+                    Console.WriteLine($"移除虚拟设备或非USB设备: ID: {vid}-{pid}-{sid}");
                 }
 
 
@@ -94,17 +95,26 @@ namespace Jlib
             vid = "";
             pid = "";
             sid = "";
+            var mi = "";
 
-            // 正则表达式（详细说明见下方）
-            string pattern = @"DeviceID=""(?<type>USB|HID)\\.*?VID_(?<vid>[0-9A-F]{4})&PID_(?<pid>[0-9A-F]{4}).*?\\\\(?<sid>[^""]+)""";
+            // 使用正则表达式提取关键信息
+            var vidMatch = Regex.Match(deviceIdString, "VID_([0-9A-F]{4})", RegexOptions.IgnoreCase);
+            if (vidMatch.Success) vid = vidMatch.Groups[1].Value;
 
-            Match match = Regex.Match(deviceIdString, pattern, RegexOptions.IgnoreCase);
-            if (!match.Success)
+            var pidMatch = Regex.Match(deviceIdString, "PID_([0-9A-F]{4})", RegexOptions.IgnoreCase);
+            if (pidMatch.Success) pid = pidMatch.Groups[1].Value;
+
+            // 提取MI编号
+            var miMatch = Regex.Match(deviceIdString, "MI_(\\d{2})", RegexOptions.IgnoreCase);
+            if (miMatch.Success)
+            {
+                mi = miMatch.Groups[1].Value;  //过滤MI设备
                 return false;
-            string deviceType = match.Groups["type"].Value;
-                vid = match.Groups["vid"].Value;
-                pid = match.Groups["pid"].Value;
-                sid = match.Groups["sid"].Value;
+            }
+            // 提取唯一ID
+            var idMatch = Regex.Match(deviceIdString, @"\\\\([^\\""]+)""$", RegexOptions.IgnoreCase);
+            if (idMatch.Success) sid = idMatch.Groups[1].Value;
+
             return true;
         }
     }
