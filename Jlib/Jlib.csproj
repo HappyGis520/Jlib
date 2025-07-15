@@ -73,7 +73,9 @@
   <ItemGroup>
     <Compile Include="ActionCommand.cs" />
     <Compile Include="AudioPlayer.cs" />
+    <Compile Include="EnumDeviceType.cs" />
     <Compile Include="EventToCommandBehavior.cs" />
+    <Compile Include="HardWareDevice.cs" />
     <Compile Include="HardwareMonitor.cs" />
     <Compile Include="IJLog.cs" />
     <Compile Include="ImageDrawHelper.cs" />
